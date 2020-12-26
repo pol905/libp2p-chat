@@ -15,7 +15,7 @@ const peerFromJSON = require("./peer.json");
   const peer = await peerid.createFromJSON(peerFromJSON);
   let ssServer = await signalingServer();
 
-  const ssServerAddress = `/ip4/${ssServer.info.host}/tcp/${
+  const ssServerAddress = `/ip4/107.22.131.150/tcp/${
     ssServer.info.port
   }/ws/p2p-webrtc-star/p2p/${peer.toB58String()}`;
 
