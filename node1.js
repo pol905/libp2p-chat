@@ -7,15 +7,23 @@ const Mplex = require("libp2p-mplex");
 const { NOISE } = require("libp2p-noise");
 const ChatProtocol = require("./chat_handler");
 const Libp2p = require("libp2p");
+const signalingServer = require("./signaling_server");
+const peerid = require("peer-id");
+const peerFromJSON = require("./peer.json");
 
 (async () => {
+  const peer = await peerid.createFromJSON(peerFromJSON);
+  let ssServer = await signalingServer();
+
+  const ssServerAddress = `/ip4/${ssServer.info.host}/tcp/${
+    ssServer.info.port
+  }/ws/p2p-webrtc-star/p2p/${peer.toB58String()}`;
+
+  console.log(ssServerAddress);
   const node = await Libp2p.create({
+    peer,
     addresses: {
-      listen: [
-        "/ip4/0.0.0.0/tcp/0",
-        "/ip4/0.0.0.0/tcp/0/ws",
-        `/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star/`,
-      ],
+      listen: ["/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/tcp/0/ws", ssServerAddress],
     },
     modules: {
       transport: [TCP, Websockets, WebRTCStar],
@@ -31,9 +39,8 @@ const Libp2p = require("libp2p");
     },
   });
   await node.start();
+  // console.log(node.peerId.pubKey);
   console.log(`Your peerID:${node.peerId.toB58String()}`);
-  console.log("Listening on addresses:");
-  node.multiaddrs.map(console.log);
   node.connectionManager.on("peer:connect", (connection) => {
     console.info(`Connected to ${connection.remotePeer.toB58String()}!`);
   });

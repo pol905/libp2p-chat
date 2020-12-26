@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "dependencies": {
+    "fs-extra": "^9.0.1",
     "it-pipe": "^1.1.0",
     "libp2p": "^0.30.0",
     "libp2p-gossipsub": "^0.8.0",
