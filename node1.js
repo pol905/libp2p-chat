@@ -32,8 +32,6 @@ const Libp2p = require("libp2p");
   });
   await node.start();
   console.log(`Your peerID:${node.peerId.toB58String()}`);
-  console.log("Listening on addresses:");
-  node.multiaddrs.map(console.log);
   node.connectionManager.on("peer:connect", (connection) => {
     console.info(`Connected to ${connection.remotePeer.toB58String()}!`);
   });
